@@ -1,0 +1,13 @@
+{% if not not_found %}
+<h1>{{title}}</h1>
+<h4>
+  Payload : {{tweet.payload}}<br />
+  Username : {{tweet.user.username}}<br />
+  Likes : {{tweet.like_count}}<br />
+  {% for like in tweet.likes.all %}
+  <span>- by user '{{like.user.username}}' at {{like.created_at}}<br /></span>
+  {% endfor%} Created At : {{tweet.created_at}}<br />
+</h4>
+{% else %}
+<h1>404 not found</h1>
+{% endif %}

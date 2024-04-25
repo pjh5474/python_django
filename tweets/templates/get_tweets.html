@@ -1,0 +1,16 @@
+<h1>{{title}}</h1>
+
+<ul>
+  {% for tweet in tweets %}
+  <li>
+    <a href="/tweets/{{tweet.id}}">
+      id : {{tweet.id}}<br />
+      Payload : {{tweet.payload}}<br />
+      Username : {{tweet.user.username}}<br />
+      Likes : {{tweet.like_count}}<br />
+      Created At : {{tweet.created_at}}<br />
+    </a>
+  </li>
+  <br />
+  {% endfor %}
+</ul>
