@@ -7,6 +7,7 @@ class Tweet(CommonModel):
     user = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
+        related_name="tweets",
     )
 
     def like_count(self):

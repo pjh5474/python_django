@@ -1,37 +1,41 @@
-from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from .models import Tweet
+from .serializers import TweetSerializer
 
 
-# Create your views here.
+@api_view()
 def get_tweets(request):
     tweets = Tweet.objects.all()
-    return render(
-        request,
-        "get_tweets.html",
+    serializer = TweetSerializer(
+        tweets,
+        many=True,
+    )
+    return Response(
         {
-            "tweets": tweets,
-            "title": "All Tweets",
-        },
+            "ok": True,
+            "data": serializer.data,
+        }
     )
 
 
+@api_view()
 def get_tweet(request, tweet_id):
-
     try:
         tweet = Tweet.objects.filter(id=tweet_id).get()
-        return render(
-            request,
-            "get_tweet.html",
+        serializer = TweetSerializer(
+            tweet,
+        )
+        return Response(
             {
-                "tweet": tweet,
-                "title": f"Tweet _ id : {tweet_id}",
-            },
+                "ok": True,
+                "data": serializer.data,
+            }
         )
     except Tweet.DoesNotExist:
-        return render(
-            request,
-            "get_tweet.html",
+        return Response(
             {
-                "not_found": True,
-            },
+                "ok": False,
+                "data": f"There is no Tweet with id : {tweet_id}",
+            }
         )
