@@ -35,3 +35,4 @@ class TweetDetail(APIView):
                 "data": serializer.data,
             }
         )
+
