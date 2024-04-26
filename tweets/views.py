@@ -1,30 +1,16 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from .models import Tweet
-from .serializers import TweetSerializer
+from rest_framework.exceptions import NotFound
+from rest_framework.views import APIView
+from .serializers import TweetSerializer, TweetDetailSerializer
+from .models import Tweet as TweetModel
 
 
-@api_view()
-def get_tweets(request):
-    tweets = Tweet.objects.all()
-    serializer = TweetSerializer(
-        tweets,
-        many=True,
-    )
-    return Response(
-        {
-            "ok": True,
-            "data": serializer.data,
-        }
-    )
-
-
-@api_view()
-def get_tweet(request, tweet_id):
-    try:
-        tweet = Tweet.objects.filter(id=tweet_id).get()
+class Tweets(APIView):
+    def get(self, request):
+        tweets = TweetModel.objects.all()
         serializer = TweetSerializer(
-            tweet,
+            tweets,
+            many=True,
         )
         return Response(
             {
@@ -32,10 +18,20 @@ def get_tweet(request, tweet_id):
                 "data": serializer.data,
             }
         )
-    except Tweet.DoesNotExist:
+
+
+class TweetDetail(APIView):
+    def get_object(self, tweet_id):
+        try:
+            return TweetModel.objects.get(id=tweet_id)
+        except TweetModel.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, tweet_id):
+        serializer = TweetDetailSerializer(self.get_object(tweet_id))
         return Response(
             {
-                "ok": False,
-                "data": f"There is no Tweet with id : {tweet_id}",
+                "ok": True,
+                "data": serializer.data,
             }
         )

@@ -1,31 +1,39 @@
 from rest_framework import serializers
+from .models import Tweet, Like
+from users.serializers import UserSerializer
 
 
-class TweetUserSerializer(serializers.Serializer):
-    username = serializers.CharField()
+class TweetSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Tweet
+        fields = (
+            "payload",
+            "user",
+            "like_count",
+            "created_at",
+        )
 
 
-class TweetLikeSerializer(serializers.Serializer):
-    user = TweetUserSerializer()
-    created_at = serializers.DateTimeField()
+class LikeSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Like
+        fields = (
+            "user",
+            "created_at",
+        )
 
 
-class TweetSerializer(serializers.Serializer):
-    payload = serializers.CharField(
-        required=True,
-        max_length=180,
+class TweetDetailSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    likes = LikeSerializer(
+        many=True,
+        read_only=True,
     )
-    user = TweetUserSerializer()
-    likes = TweetLikeSerializer(many=True)
-    created_at = serializers.DateTimeField()
-    updated_at = serializers.DateTimeField()
 
-
-class UserTweetSerializer(serializers.Serializer):
-    payload = serializers.CharField(
-        required=True,
-        max_length=180,
-    )
-    likes = TweetLikeSerializer(many=True)
-    created_at = serializers.DateTimeField()
-    updated_at = serializers.DateTimeField()
+    class Meta:
+        model = Tweet
+        fields = "__all__"
