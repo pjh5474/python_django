@@ -94,6 +94,16 @@ class UserDetail(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
+        print(request.user.id, user_id)
+        if request.user.id != user_id:
+            return Response(
+                {
+                    "ok": False,
+                    "error": "You can only edit your own account",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         userSerializer = UserDetailSerializer(
             user,
             data=request.data,
@@ -172,6 +182,7 @@ class ChangePassword(APIView):
 
     def put(self, request):
         user = request.user
+
         old_password = request.data.get("old_password")
         new_password = request.data.get("new_password")
         new_password_check = request.data.get("new_password_check")
