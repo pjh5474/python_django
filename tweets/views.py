@@ -5,6 +5,7 @@ from .serializers import TweetSerializer, TweetDetailSerializer
 from .models import Tweet as TweetModel
 
 
+# Get / Post
 class Tweets(APIView):
     def get(self, request):
         tweets = TweetModel.objects.all()
@@ -19,7 +20,11 @@ class Tweets(APIView):
             }
         )
 
+    def post(self, request):
+        pass
 
+
+# Get / Put / Delete
 class TweetDetail(APIView):
     def get_object(self, tweet_id):
         try:
@@ -36,3 +41,8 @@ class TweetDetail(APIView):
             }
         )
 
+    def put(self, request):
+        pass
+
+    def delete(self, request):
+        pass
