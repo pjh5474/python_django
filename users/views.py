@@ -59,6 +59,11 @@ class UserDetail(APIView):
         try:
             return User.objects.get(id=user_id)
         except User.DoesNotExist:
+            return "NotFound"
+
+    def get(self, request, user_id):
+        user = self.get_object(user_id)
+        if user == "NotFound":
             return Response(
                 {
                     "ok": False,
@@ -67,8 +72,7 @@ class UserDetail(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-    def get(self, request, user_id):
-        userSerializer = UserDetailSerializer(self.get_object(user_id))
+        userSerializer = UserDetailSerializer(user)
         return Response(
             {
                 "ok": True,
@@ -105,6 +109,11 @@ class UserTweets(APIView):
         try:
             return User.objects.get(id=user_id)
         except User.DoesNotExist:
+            return "NotFound"
+
+    def get(self, request, user_id):
+        user = self.get_object(user_id)
+        if user == "NotFound":
             return Response(
                 {
                     "ok": False,
@@ -113,11 +122,9 @@ class UserTweets(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-    def get(self, request, user_id):
-        userObject = self.get_object(user_id)
-        userSerializer = UserSerializer(userObject)
+        userSerializer = UserSerializer(user)
         tweetSerializer = TweetSerializer(
-            userObject.tweets,
+            user.tweets,
             many=True,
         )
         return Response(
