@@ -94,7 +94,6 @@ class UserDetail(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        print(request.user.id, user_id)
         if request.user.id != user_id:
             return Response(
                 {
