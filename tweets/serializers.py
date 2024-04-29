@@ -17,7 +17,9 @@ class TweetSerializer(serializers.ModelSerializer):
 
 
 class LikeSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(
+        read_only=True,
+    )
 
     class Meta:
         model = Like
@@ -28,7 +30,7 @@ class LikeSerializer(serializers.ModelSerializer):
 
 
 class TweetDetailSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
     likes = LikeSerializer(
         many=True,
         read_only=True,
@@ -36,4 +38,4 @@ class TweetDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tweet
-        fields = "__all__"
+        exclude = ("id",)

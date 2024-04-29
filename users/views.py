@@ -84,8 +84,18 @@ class UserDetail(APIView):
         )
 
     def put(self, request, user_id):
+        user = self.get_object(user_id)
+        if user == "NotFound":
+            return Response(
+                {
+                    "ok": False,
+                    "error": f"No user with id : {user_id}",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
         userSerializer = UserDetailSerializer(
-            self.get_object(user_id),
+            user,
             data=request.data,
             partial=True,
         )
@@ -93,12 +103,18 @@ class UserDetail(APIView):
             user = userSerializer.save()
             userSerializer = UserDetailSerializer(user)
             return Response(
-                userSerializer.data,
+                {
+                    "ok": True,
+                    "data": userSerializer.data,
+                },
                 status=status.HTTP_200_OK,
             )
         else:
             return Response(
-                userSerializer.errors,
+                {
+                    "ok": False,
+                    "error": userSerializer.errors,
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -248,7 +264,10 @@ class Login(APIView):
             )
         else:
             return Response(
-                {"ok": False, "error": "Check username and password are correct"},
+                {
+                    "ok": False,
+                    "error": "Check username and password are correct",
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
